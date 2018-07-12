@@ -7,6 +7,7 @@ import com.viewfin.match.core.conf.OrderConfig;
 import com.viewfin.match.core.entity.Order;
 import com.viewfin.match.core.service.strategy.LimitMatchStrategy;
 import com.viewfin.match.core.util.BeanUtil;
+import com.viewfin.match.core.util.MapUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,14 +147,16 @@ public class EtcbtcMatchApplication implements CommandLineRunner {
         Order order = null;
         for (Long orderId : createOrderList) {
             orderMap = hashOperations.entries(orderConfig.getCreateOrderDetailMarket(orderId));
-            try {
-                order = BeanUtil.populate(orderMap, Order.class);
+            MapUtils.toBean(orderMap,order);
 
-            } catch (Exception e) {
-                LOGGER.error("BeanUtil.populate error,msg:> {}", e.getMessage());
+            if(order==null){
+                LOGGER.error("rebootOrder error");
+                continue;
             }
 
             orderProducer.onData(order);
+
+
         }
     }
 

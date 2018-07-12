@@ -18,14 +18,21 @@ public class OrderProducer
         try
         {
             Order event = ringBuffer.get(sequence); // Get the entry in the Disruptor
-            BeanUtils.copyProperties(event,order);
 
+            event.setTicks(order.getTicks());
+            event.setTimestamp(order.getTimestamp());
+            event.setLots(order.getLots());
+            event.setOrderId(order.getOrderId());
+
+            event.setSide(order.getSide());
+
+            event.setType(order.getType());
+            event.setMarket(order.getMarket());
+            event.setTrader(order.getTrader());
+
+
+        }finally {
             ringBuffer.publish(sequence);
-
-        } catch (Exception e) {
-           //log.error("order复制异常：order："+ order.toString());
-            //TODO  异常的订单请求放入到数据库 ，有空处理
-            //System.exit(1);
         }
     }
 }

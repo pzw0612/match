@@ -3,6 +3,7 @@ package com.viewfin.match.core.component.kafka;
 
 import com.viewfin.match.core.entity.Trade;
 import com.viewfin.match.core.util.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 @EnableKafka
 @Component
+@Slf4j
 public class BasicKafkaProducer {
 
     //@Qualifier("kafkaTemplate")
@@ -31,6 +33,9 @@ public class BasicKafkaProducer {
         }else{
             id= String.valueOf(matchId);
         }
-        kafkaTemplate.send(topic,id, JSONUtil.toJSONString(trade));
+        String tradeJson = JSONUtil.toJSONString(trade);
+
+        log.info("trade id {},{}",matchId,tradeJson);
+        kafkaTemplate.send(topic,id, tradeJson);
     }
 }

@@ -19,7 +19,9 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -117,14 +119,41 @@ public class OrderServiceImpl implements  OrderService {
         }
     }
     @Override
-    public Result<Map<String, PriorityBlockingQueue<Order>>> getDeepData(String market, ErrorInfo errorInfo) {
+    public Result<Map<String, List<Order>>> getDeepData(String market, ErrorInfo errorInfo) {
         try{
 
-            Map<String, PriorityBlockingQueue<Order>>  resultMap = new HashMap<>();
-            resultMap.put(OrderSideEnum.BID.getCode(),getMatchStrategy().getBidQueue());
-            resultMap.put(OrderSideEnum.ASK.getCode(),getMatchStrategy().getAskQueue());
+            Map<String, List<Order>>  resultMap = new HashMap<>();
 
-            Result<Map<String, PriorityBlockingQueue<Order>>> result = Result.success(resultMap);
+            PriorityBlockingQueue<Order> bidQueue = new PriorityBlockingQueue(getMatchStrategy().getBidQueue());
+            PriorityBlockingQueue<Order> askQueue = new PriorityBlockingQueue(getMatchStrategy().getAskQueue());
+
+            if(bidQueue.size()>0){
+                List<Order> bidOrderList = new ArrayList<>(bidQueue.size());
+                Order order = bidQueue.poll();
+                while (order!=null){
+                    bidOrderList.add(order);
+                    order = bidQueue.poll();
+                }
+                resultMap.put(OrderSideEnum.BID.getCode(),bidOrderList);
+            }else{
+                resultMap.put(OrderSideEnum.BID.getCode(),new ArrayList<>());
+
+            }
+
+            if(askQueue.size()>0){
+                List<Order> askOrderList = new ArrayList<>(askQueue.size());
+                Order order = askQueue.poll();
+                while (order!=null){
+                    askOrderList.add(order);
+                    order = askQueue.poll();
+                }
+                resultMap.put(OrderSideEnum.ASK.getCode(),askOrderList);
+            }else {
+                resultMap.put(OrderSideEnum.ASK.getCode(),new ArrayList<>());
+
+            }
+
+            Result<Map<String, List<Order>>> result = Result.success(resultMap);
 
             return result;
 

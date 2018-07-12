@@ -17,9 +17,9 @@ public class OrderBuyCompartor implements Comparator<Order> {
             return 1;
         } else {
             if (o1.getTimestamp().compareTo(o2.getTimestamp())>0) {
-                return -1;
-            } else if(o1.getTimestamp().compareTo(o2.getTimestamp())<0) {
                 return 1;
+            } else if(o1.getTimestamp().compareTo(o2.getTimestamp())<0) {
+                return -1;
             }else{
                 if(o1.getLots().compareTo(o2.getLots()) > 0){
                     return 1;

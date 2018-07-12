@@ -27,13 +27,13 @@ public abstract class AbstractMatchStrategy implements MatchService.MatchStrateg
     protected static final Logger LOGGER = LoggerFactory.getLogger(LimitMatchStrategy.class);
 
     //买单队列
-    protected volatile PriorityBlockingQueue<Order> bidQueue =
+    protected static final PriorityBlockingQueue<Order> bidQueue =
             new PriorityBlockingQueue<Order>(10000000, new OrderBuyCompartor());
     //卖单队列
-    protected volatile PriorityBlockingQueue<Order> askQueue =
+    protected static final PriorityBlockingQueue<Order> askQueue =
             new PriorityBlockingQueue<Order>(10000000, new OrderSellCompartor());
     //取消队列
-    protected volatile PriorityBlockingQueue<Long> cancelQueue =
+    protected  static final PriorityBlockingQueue<Long> cancelQueue =
             new PriorityBlockingQueue<>(100000);
 
     @Autowired
@@ -91,70 +91,10 @@ public abstract class AbstractMatchStrategy implements MatchService.MatchStrateg
                 return;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("match error,msg > {}", e.getMessage());
         }
     }
-
-//    public boolean cancelOrder(Long orderId) {
-//        try {
-//            boolean flg= false;
-//            for(Order order1 :bidQueue){
-//                if (order1.getOrderId().equals(orderId)) {
-//                    synchronized (bidQueue) {
-//                        flg = cancelOrderHandle(order1,bidQueue);
-//                    }
-//                    break;
-//                }
-//            }
-//            if (flg){
-//                return true;
-//            }
-//            for(Order order1 :askQueue){
-//                if (order1.getOrderId().equals(orderId)) {
-//                    synchronized (askQueue) {
-//                        flg = cancelOrderHandle(order1,askQueue);
-//                    }
-//                    break;
-//                }
-//            }
-//            return flg;
-//        }catch(Exception e) {
-//            LOGGER.error("cancel order error,msg {}",e.getMessage());
-//            return false;
-//        }
-//}
-//    private boolean cancelOrderHandle(Order order1,PriorityBlockingQueue<Order> queue) {
-//        boolean flg;
-//
-//            Trade trade = new Trade();
-//            trade.setMarket(orderConfig.getMarket());
-//            trade.setMatchId(genTradeId());
-//            if (OrderOpsEnum.BUY.getCode().equalsIgnoreCase(order1.getSide())) {
-//                trade.setBidOrderId(order1.getOrderId());
-//                trade.setSide(OrderSideEnum.BID.getCode());
-//                trade.setAskOrderId(-1L);
-//            }else {
-//                trade.setAskOrderId(order1.getOrderId());
-//                trade.setSide(OrderSideEnum.ASK.getCode());
-//                trade.setBidOrderId(-1L);
-//            }
-//            trade.setLots(order1.getLots());
-//            trade.setTicks(order1.getTicks());
-//            trade.setTime(System.currentTimeMillis());
-//            trade.setStatus(TradeStatusEnum.cancel.getCode());
-//
-//            sendMsg(trade);
-//
-//            listOperations.remove(orderConfig.getCreareOrderQueueMarket(), 0, order1.getOrderId());
-//            hashOperations.getOperations().delete(orderConfig.getCreateOrderDetailMarket(order1.getOrderId()));
-//
-//            queue.remove(order1);
-//
-//            flg=true;
-//
-//        return flg;
-//    }
-
 
     public void doBuy(Order order) {
 

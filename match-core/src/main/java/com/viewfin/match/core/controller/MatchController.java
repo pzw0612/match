@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -124,8 +125,8 @@ public class MatchController {
 
     @ResponseBody
     @RequestMapping(value="/getDeepData/{market}",method = RequestMethod.GET)
-    public Result<Map<String,PriorityBlockingQueue<Order>>> getDeepData(@PathVariable("market") String market) {
-        Result<Map<String,PriorityBlockingQueue<Order>>> result ;
+    public Result<Map<String,List<Order>>> getDeepData(@PathVariable("market") String market) {
+        Result<Map<String,List<Order>>> result ;
         try {
             ErrorInfo errorInfo =null;
             if(StringUtils.isEmpty(market)){

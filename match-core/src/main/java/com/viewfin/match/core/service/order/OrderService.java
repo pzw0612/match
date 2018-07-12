@@ -1,11 +1,11 @@
 package com.viewfin.match.core.service.order;
 
-import com.viewfin.match.core.exception.ErrorInfo;
 import com.viewfin.match.core.entity.Order;
+import com.viewfin.match.core.exception.ErrorInfo;
 import com.viewfin.match.core.exception.Result;
 
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.PriorityBlockingQueue;
 
 
 /**
@@ -39,5 +39,5 @@ public interface OrderService {
      * @param errorInfo
      * @return
      */
-    public Result<Map<String,PriorityBlockingQueue<Order>>> getDeepData(String market, ErrorInfo errorInfo) ;
+    public Result<Map<String,List<Order>>> getDeepData(String market, ErrorInfo errorInfo) ;
 }

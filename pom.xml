@@ -10,6 +10,7 @@
       <module>match-core</module>
       <module>match-etcusd</module>
       <module>match-etcbtc</module>
+      <module>match-bcheth</module>
   </modules>
 
   <packaging>pom</packaging>
